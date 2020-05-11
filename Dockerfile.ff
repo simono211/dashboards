@@ -1,0 +1,33 @@
+FROM debian:sid
+
+RUN apt-get update && apt-get install -y \
+	dirmngr \
+	gnupg \
+	--no-install-recommends \
+	&& apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0AB215679C571D1C8325275B9BDB3D89CE49EC21 \
+	&& echo "deb http://ppa.launchpad.net/mozillateam/firefox-next/ubuntu wily main" >> /etc/apt/sources.list.d/firefox.list \
+	&& apt-get update && apt-get install -y \
+	ca-certificates \
+	firefox \
+	hicolor-icon-theme \
+	libasound2 \
+	libgl1-mesa-dri \
+	libgl1-mesa-glx \
+	--no-install-recommends \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip
+
+#RUN mkdir -p /usr/lib/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384} \
+#    && cd /usr/lib/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384} \
+#    && wget https://addons.mozilla.org/firefox/downloads/latest/tab-rotator/addon-207605-latest.xpi \
+#    && unzip addon-207605-latest.xpi \
+#    && rm addon-207605-latest.xpi
+
+ENV LANG en-US
+
+COPY local.conf /etc/fonts/local.conf
+
+ENTRYPOINT [ "/usr/bin/firefox" ]
